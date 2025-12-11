@@ -8,7 +8,6 @@ export default function AcceptInvitePage() {
   const navigate = useNavigate()
   const { user } = useAuth()
   
-  // ステータス管理
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -19,7 +18,6 @@ export default function AcceptInvitePage() {
     setLoading(true)
     setError(null)
     
-    // RPC呼び出し
     const { error } = await supabase.rpc('accept_invite', {
       invite_token: token
     })
@@ -29,7 +27,6 @@ export default function AcceptInvitePage() {
       setLoading(false)
     } else {
       setSuccess(true)
-      // 成功したら少し待ってから遷移（ユーザーに成功を伝えるため）
       setTimeout(() => navigate('/'), 1500)
     }
   }
@@ -38,7 +35,6 @@ export default function AcceptInvitePage() {
     <div style={{ maxWidth: '400px', margin: '4rem auto', textAlign: 'center', padding: '2rem', border: '1px solid #eee', borderRadius: '8px' }}>
       <h2>Join Organization</h2>
       
-      {/* ログインしていない場合 */}
       {!user && (
         <div style={{ marginTop: '1rem', color: '#666' }}>
           <p>Please sign in to accept the invitation.</p>
@@ -48,7 +44,6 @@ export default function AcceptInvitePage() {
         </div>
       )}
 
-      {/* ログイン済みの場合 */}
       {user && !success && (
         <div style={{ marginTop: '2rem' }}>
           <p style={{ marginBottom: '1.5rem' }}>
@@ -80,7 +75,6 @@ export default function AcceptInvitePage() {
         </div>
       )}
 
-      {/* 成功時 */}
       {success && (
         <div style={{ marginTop: '2rem', color: 'green' }}>
           <h3>Welcome aboard!</h3>
