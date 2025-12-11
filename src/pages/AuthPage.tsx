@@ -11,7 +11,6 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // すでにログイン済みならダッシュボードへ
   if (user) return <Navigate to="/" replace />
 
   const handleAuth = async (e: React.FormEvent) => {
@@ -21,17 +20,15 @@ export default function AuthPage() {
 
     try {
       if (isSignUp) {
-        // Sign Up
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            data: { full_name: email.split('@')[0] }, // 仮の名前
+            data: { full_name: email.split('@')[0] },
           },
         })
         if (error) throw error
       } else {
-        // Sign In
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,

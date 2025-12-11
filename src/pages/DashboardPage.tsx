@@ -19,17 +19,17 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
 
   const fetchOrgs = async () => {
-    if (!user) return; // ガードを追加
+    if (!user) return
 
     setLoading(true)
     const { data, error } = await supabase
       .from('memberships')
       .select('org_id, role, organization:organizations(id, name)')
       .eq('status', 'active')
-      .eq('user_id', user.id) // 【重要】自分のレコードだけに絞り込む
+      .eq('user_id', user.id)
     
     if (error) {
-      console.error('Error fetching orgs:', error)
+      // Error handling - could be improved with user-facing error messages
     } else {
       setOrgs(data as unknown as OrgData[])
     }
@@ -44,7 +44,6 @@ export default function DashboardPage() {
     e.preventDefault()
     if (!newOrgName.trim()) return
 
-    // RPC呼び出し: トランザクションで組織作成 + Owner権限付与
     const { error } = await supabase.rpc('create_organization', {
       org_name: newOrgName
     })
@@ -53,7 +52,7 @@ export default function DashboardPage() {
       alert(`Error: ${error.message}`)
     } else {
       setNewOrgName('')
-      fetchOrgs() // リスト更新
+      fetchOrgs()
     }
   }
 
@@ -67,7 +66,6 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* 組織作成フォーム */}
       <section style={{ marginBottom: '2rem', padding: '1.5rem', background: '#f5f5f5', borderRadius: '8px' }}>
         <h3>Create New Organization</h3>
         <form onSubmit={handleCreateOrg} style={{ display: 'flex', gap: '0.5rem' }}>
@@ -81,8 +79,6 @@ export default function DashboardPage() {
           <button type="submit" disabled={!newOrgName}>Create (RPC)</button>
         </form>
       </section>
-
-      {/* 組織一覧 */}
       <section>
         <h3>Your Organizations</h3>
         {loading ? (

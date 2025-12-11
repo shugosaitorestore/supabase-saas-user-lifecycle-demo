@@ -24,12 +24,10 @@ export default function OrganizationPage() {
   const [loading, setLoading] = useState(true)
   const [msg, setMsg] = useState('')
 
-  // データ取得
   const fetchData = async () => {
     if (!orgId) return
     setLoading(true)
     
-    // 1. 組織情報の取得 (RLSにより自分の組織しか取れない)
     const { data: org, error: orgError } = await supabase
       .from('organizations')
       .select('name')
@@ -43,7 +41,6 @@ export default function OrganizationPage() {
     }
     setOrgName(org.name)
 
-    // 2. メンバー一覧の取得 (profiles情報を結合)
     const { data: memberList, error: memberError } = await supabase
       .from('memberships')
       .select('*, profiles(email, full_name)')
@@ -51,7 +48,7 @@ export default function OrganizationPage() {
       .order('created_at', { ascending: true })
 
     if (memberError) {
-      console.error(memberError)
+      setMsg('Error loading members.')
     } else {
       setMembers(memberList as unknown as MemberData[])
     }
@@ -62,17 +59,14 @@ export default function OrganizationPage() {
     fetchData()
   }, [orgId])
 
-  // 自分の権限を特定 (メンバーリスト取得後)
   const myRole = members.find(m => m.user_id === user?.id)?.role;
   const amIAdminOrOwner = myRole === 'owner' || myRole === 'admin';
 
-  // メンバー招待 (RPC)
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!inviteEmail) return
     setMsg('Inviting...')
 
-    // RPC呼び出し
     const { data, error } = await supabase.rpc('invite_member', {
       target_org_id: orgId!,
       invite_email: inviteEmail
@@ -81,20 +75,17 @@ export default function OrganizationPage() {
     if (error) {
       setMsg(`Error: ${error.message}`)
     } else {
-      setMsg(`Invite sent! (Dev Mode: Token ID = ${data})`)
-      // 開発用: コンソールに招待トークンを表示
       const { data: inviteData } = await supabase
         .from('invites')
         .select('token')
         .eq('id', data)
         .single();
         
-      console.log(">>> DEMO INVITE LINK: /invites/" + inviteData?.token)
+      setMsg(`Invite sent! Link: /invites/${inviteData?.token}`)
       setInviteEmail('')
     }
   }
 
-  // ステータス変更 (RPC)
   const handleChangeStatus = async (membershipId: string, newStatus: string) => {
     if (!confirm(`Change status to ${newStatus}?`)) return
 
@@ -106,7 +97,7 @@ export default function OrganizationPage() {
     if (error) {
       alert(error.message)
     } else {
-      fetchData() // リスト更新
+      fetchData()
     }
   }
 
@@ -122,10 +113,9 @@ export default function OrganizationPage() {
         <p>My Role: <strong>{myRole}</strong></p>
       </header>
 
-      {/* 通知エリア */}
+      {/* [DEMO ONLY] Log invite link for testing purposes */}
       {msg && <div style={{ background: '#eef', padding: '1rem', marginBottom: '1rem', borderRadius: '4px' }}>{msg}</div>}
 
-      {/* 招待フォーム: 権限がある場合のみ表示 */}
       {amIAdminOrOwner && (
         <section style={{ marginBottom: '3rem' }}>
           <h3>Invite Member</h3>
@@ -139,11 +129,9 @@ export default function OrganizationPage() {
             />
             <button type="submit">Invite</button>
           </form>
-          <small style={{ color: '#666' }}>* Since this is a demo, check the console log for the invite link after clicking Invite.</small>
         </section>
       )}
 
-      {/* メンバーリスト */}
       <section>
         <h3>Members</h3>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
@@ -157,11 +145,8 @@ export default function OrganizationPage() {
           </thead>
           <tbody>
             {members.map((m) => {
-              // ボタン表示判定ロジック
               const isMe = m.user_id === user?.id;
               const isTargetOwner = m.role === 'owner';
-              
-              // 「自分が権限持ち」かつ「対象が自分じゃない」かつ「対象がOwnerじゃない」
               const showActions = amIAdminOrOwner && !isMe && !isTargetOwner;
 
               return (
