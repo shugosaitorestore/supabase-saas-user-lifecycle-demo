@@ -101,88 +101,79 @@ export default function OrganizationPage() {
     }
   }
 
-  if (loading) return <div className="p-8">Loading...</div>
+  if (loading) return <div className="container">Loading...</div>
 
   return (
-    <div style={{ maxWidth: '800px', margin: '2rem auto', padding: '0 1rem' }}>
-      <Link to="/" style={{ display: 'inline-block', marginBottom: '1rem' }}>&larr; Back to Dashboard</Link>
+    <div className="container">
+      <Link to="/" className="link-btn inline-block mb-4">&larr; Back to Dashboard</Link>
       
-      <header style={{ borderBottom: '1px solid #ddd', paddingBottom: '1rem', marginBottom: '2rem' }}>
-        <h1>{orgName}</h1>
-        <p style={{ color: '#666' }}>Organization ID: {orgId}</p>
-        <p>My Role: <strong>{myRole}</strong></p>
+      <header className="header-row">
+        <div>
+          <h1>{orgName}</h1>
+          <p className="text-xs">ID: {orgId}</p>
+        </div>
+        <div className={`badge badge-${myRole}`}>My Role: {myRole}</div>
       </header>
 
-      {/* [DEMO ONLY] Log invite link for testing purposes */}
-      {msg && <div style={{ background: '#eef', padding: '1rem', marginBottom: '1rem', borderRadius: '4px' }}>{msg}</div>}
+      {msg && <div className="info-message">{msg}</div>}
 
       {amIAdminOrOwner && (
-        <section style={{ marginBottom: '3rem' }}>
+        <section className="card">
           <h3>Invite Member</h3>
-          <form onSubmit={handleInvite} style={{ display: 'flex', gap: '0.5rem' }}>
-            <input
-              type="email"
-              placeholder="colleague@example.com"
-              value={inviteEmail}
-              onChange={(e) => setInviteEmail(e.target.value)}
-              style={{ flex: 1, padding: '8px' }}
-            />
-            <button type="submit">Invite</button>
+          <form onSubmit={handleInvite} className="flex">
+            <input type="email" placeholder="colleague@example.com" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} />
+            <button type="submit" className="btn btn-primary">Invite</button>
           </form>
+          <p className="text-xs mt-4">* Check console for invite link</p>
         </section>
       )}
 
       <section>
         <h3>Members</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-          <thead>
-            <tr style={{ borderBottom: '2px solid #ddd' }}>
-              <th style={{ padding: '8px' }}>User</th>
-              <th style={{ padding: '8px' }}>Role</th>
-              <th style={{ padding: '8px' }}>Status</th>
-              <th style={{ padding: '8px' }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {members.map((m) => {
-              const isMe = m.user_id === user?.id;
-              const isTargetOwner = m.role === 'owner';
-              const showActions = amIAdminOrOwner && !isMe && !isTargetOwner;
-
-              return (
-                <tr key={m.id} style={{ borderBottom: '1px solid #eee' }}>
-                  <td style={{ padding: '8px' }}>
-                    <div>{m.profiles?.full_name || 'Unknown'}</div>
-                    <div style={{ fontSize: '0.8em', color: '#666' }}>{m.profiles?.email}</div>
-                  </td>
-                  <td style={{ padding: '8px' }}>{m.role}</td>
-                  <td style={{ padding: '8px' }}>
-                    <span style={{ 
-                      padding: '2px 6px', borderRadius: '4px', fontSize: '0.8em',
-                      background: m.status === 'active' ? '#e6fffa' : '#fff5f5',
-                      color: m.status === 'active' ? '#047481' : '#c53030'
-                    }}>
-                      {m.status}
-                    </span>
-                  </td>
-                  <td style={{ padding: '8px' }}>
-                    {showActions && (
-                      <div style={{ display: 'flex', gap: '4px' }}>
-                        {m.status !== 'active' && (
-                           <button onClick={() => handleChangeStatus(m.id, 'active')} style={{ fontSize: '0.8em' }}>Activate</button>
-                        )}
-                        {m.status === 'active' && (
-                           <button onClick={() => handleChangeStatus(m.id, 'suspended')} style={{ fontSize: '0.8em' }}>Suspend</button>
-                        )}
-                        <button onClick={() => handleChangeStatus(m.id, 'left')} style={{ fontSize: '0.8em', color: 'red' }}>Remove</button>
-                      </div>
-                    )}
-                  </td>
+        <div className="card p-0" style={{ overflow: 'hidden' }}>
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Actions</th>
                 </tr>
-              )
-            })}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {members.map((m) => {
+                  const isMe = m.user_id === user?.id;
+                  const isTargetOwner = m.role === 'owner';
+                  const showActions = amIAdminOrOwner && !isMe && !isTargetOwner;
+
+                  return (
+                    <tr key={m.id}>
+                      <td>
+                        <div>{m.profiles?.full_name || 'Unknown'}</div>
+                        <div className="text-xs">{m.profiles?.email}</div>
+                      </td>
+                      <td><span className={`badge badge-${m.role}`}>{m.role}</span></td>
+                      <td><span className={`badge status-${m.status}`}>{m.status}</span></td>
+                      <td>
+                        {showActions && (
+                          <div className="actions">
+                            {m.status !== 'active' ? (
+                               <button onClick={() => handleChangeStatus(m.id, 'active')} className="btn btn-secondary">Activate</button>
+                            ) : (
+                               <button onClick={() => handleChangeStatus(m.id, 'suspended')} className="btn btn-secondary">Suspend</button>
+                            )}
+                            <button onClick={() => handleChangeStatus(m.id, 'left')} className="btn btn-danger">Remove</button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
     </div>
   )
