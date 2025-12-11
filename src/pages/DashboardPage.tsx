@@ -47,7 +47,7 @@ export default function DashboardPage() {
     // RPC呼び出し: トランザクションで組織作成 + Owner権限付与
     const { error } = await supabase.rpc('create_organization', {
       org_name: newOrgName
-    }as any)
+    })
 
     if (error) {
       alert(`Error: ${error.message}`)

@@ -41,7 +41,7 @@ export default function OrganizationPage() {
       setLoading(false)
       return
     }
-    setOrgName((org as any).name)
+    setOrgName(org.name)
 
     // 2. メンバー一覧の取得 (profiles情報を結合)
     const { data: memberList, error: memberError } = await supabase
@@ -76,7 +76,7 @@ export default function OrganizationPage() {
     const { data, error } = await supabase.rpc('invite_member', {
       target_org_id: orgId!,
       invite_email: inviteEmail
-    } as any)
+    })
 
     if (error) {
       setMsg(`Error: ${error.message}`)
@@ -87,9 +87,9 @@ export default function OrganizationPage() {
         .from('invites')
         .select('token')
         .eq('id', data)
-        .single() as any;
+        .single();
         
-      console.log(">>> DEMO INVITE LINK: /invites/" + (inviteData as any).token)
+      console.log(">>> DEMO INVITE LINK: /invites/" + inviteData?.token)
       setInviteEmail('')
     }
   }
@@ -101,7 +101,7 @@ export default function OrganizationPage() {
     const { error } = await supabase.rpc('set_membership_status', {
       target_membership_id: membershipId,
       new_status: newStatus
-    } as any)
+    })
 
     if (error) {
       alert(error.message)
