@@ -32,55 +32,49 @@ export default function AcceptInvitePage() {
   }
 
   return (
-    <div style={{ maxWidth: '400px', margin: '4rem auto', textAlign: 'center', padding: '2rem', border: '1px solid #eee', borderRadius: '8px' }}>
-      <h2>Join Organization</h2>
-      
-      {!user && (
-        <div style={{ marginTop: '1rem', color: '#666' }}>
-          <p>Please sign in to accept the invitation.</p>
-          <Link to="/auth" style={{ color: 'blue', textDecoration: 'underline' }}>
-            Go to Sign In / Sign Up page
-          </Link>
-        </div>
-      )}
+    <div className="container container-narrow mt-16">
+      <div className="card text-center">
+        <h2>Join Organization</h2>
+        
+        {!user && (
+          <div className="mt-4">
+            <p>Please sign in to accept the invitation.</p>
+            <Link to="/auth" className="link-btn">
+              Go to Sign In / Sign Up page
+            </Link>
+          </div>
+        )}
 
-      {user && !success && (
-        <div style={{ marginTop: '2rem' }}>
-          <p style={{ marginBottom: '1.5rem' }}>
-            You are invited to join an organization.<br/>
-            Click the button below to accept.
-          </p>
-          
-          {error && (
-            <div style={{ color: 'red', marginBottom: '1rem', background: '#ffe6e6', padding: '0.5rem', borderRadius: '4px' }}>
-              Error: {error}
-            </div>
-          )}
+        {user && !success && (
+          <div className="mt-4">
+            <p className="mb-6">
+              You are invited to join an organization.<br/>
+              Click the button below to accept.
+            </p>
+            
+            {error && (
+              <div className="error-message">
+                Error: {error}
+              </div>
+            )}
 
-          <button 
-            onClick={handleAccept} 
-            disabled={loading}
-            style={{ 
-              padding: '10px 20px', 
-              fontSize: '1.1rem', 
-              cursor: loading ? 'not-allowed' : 'pointer',
-              background: loading ? '#ccc' : '#0070f3',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px'
-            }}
-          >
-            {loading ? 'Processing...' : 'Accept Invitation'}
-          </button>
-        </div>
-      )}
+            <button 
+              onClick={handleAccept} 
+              disabled={loading}
+              className="btn btn-primary"
+            >
+              {loading ? 'Processing...' : 'Accept Invitation'}
+            </button>
+          </div>
+        )}
 
-      {success && (
-        <div style={{ marginTop: '2rem', color: 'green' }}>
-          <h3>Welcome aboard!</h3>
-          <p>Redirecting to dashboard...</p>
-        </div>
-      )}
+        {success && (
+          <div className="success-message">
+            <h3>Welcome aboard!</h3>
+            <p>Redirecting to dashboard...</p>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

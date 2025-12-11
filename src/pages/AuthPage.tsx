@@ -43,45 +43,31 @@ export default function AuthPage() {
   }
 
   return (
-    <div style={{ maxWidth: '400px', margin: '4rem auto', padding: '2rem', border: '1px solid #ccc', borderRadius: '8px' }}>
-      <h2>{isSignUp ? 'Create an Account' : 'Sign In'}</h2>
-      
-      {error && <div style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>}
+    <div className="container container-narrow mt-16">
+      <div className="card">
+        <h2 className="text-center">{isSignUp ? 'Create Account' : 'Welcome Back'}</h2>
+        
+        {error && <div className="error-message">{error}</div>}
 
-      <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <div>
-          <label>Email</label>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{ width: '100%', padding: '8px' }}
-          />
-        </div>
-        <div>
-          <label>Password</label>
-          <input
-            type="password"
-            required
-            minLength={6}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ width: '100%', padding: '8px' }}
-          />
-        </div>
-        <button type="submit" disabled={loading} style={{ padding: '10px', cursor: 'pointer' }}>
-          {loading ? 'Processing...' : isSignUp ? 'Sign Up' : 'Sign In'}
-        </button>
-      </form>
+        <form onSubmit={handleAuth} className="flex-col">
+          <div className="form-group">
+            <label>Email Address</label>
+            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+          <button type="submit" disabled={loading} className="btn btn-primary w-full">
+            {loading ? 'Processing...' : isSignUp ? 'Sign Up' : 'Sign In'}
+          </button>
+        </form>
 
-      <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-        <button 
-          onClick={() => setIsSignUp(!isSignUp)}
-          style={{ background: 'none', border: 'none', color: 'blue', cursor: 'pointer', textDecoration: 'underline' }}
-        >
-          {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
-        </button>
+        <div className="mt-4 text-center">
+          <button onClick={() => setIsSignUp(!isSignUp)} className="link-btn">
+            {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
+          </button>
+        </div>
       </div>
     </div>
   )

@@ -57,26 +57,25 @@ export default function DashboardPage() {
   }
 
   return (
-    <div style={{ maxWidth: '800px', margin: '2rem auto', padding: '0 1rem' }}>
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1>Dashboard</h1>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <span>{user?.email}</span>
-          <button onClick={() => signOut()} style={{ padding: '4px 8px' }}>Sign Out</button>
+    <div className="container">
+      <header className="header-row">
+        <div>
+          <h1>Dashboard</h1>
+          <p className="text-sm">{user?.email}</p>
         </div>
+        <button onClick={() => signOut()} className="btn btn-secondary">Sign Out</button>
       </header>
 
-      <section style={{ marginBottom: '2rem', padding: '1.5rem', background: '#f5f5f5', borderRadius: '8px' }}>
+      <section className="card">
         <h3>Create New Organization</h3>
-        <form onSubmit={handleCreateOrg} style={{ display: 'flex', gap: '0.5rem' }}>
+        <form onSubmit={handleCreateOrg} className="flex">
           <input
             type="text"
             placeholder="Organization Name (e.g. Acme Corp)"
             value={newOrgName}
             onChange={(e) => setNewOrgName(e.target.value)}
-            style={{ flex: 1, padding: '8px' }}
           />
-          <button type="submit" disabled={!newOrgName}>Create (RPC)</button>
+          <button type="submit" disabled={!newOrgName} className="btn btn-primary">Create</button>
         </form>
       </section>
       <section>
@@ -86,21 +85,22 @@ export default function DashboardPage() {
         ) : orgs.length === 0 ? (
           <p>You don't belong to any organization yet.</p>
         ) : (
-          <ul style={{ listStyle: 'none', padding: 0 }}>
+          <div className="flex-col">
             {orgs.map((item) => (
-              <li key={item.org_id} style={{ border: '1px solid #ddd', padding: '1rem', marginBottom: '0.5rem', borderRadius: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div key={item.org_id} className="card flex items-center justify-between mb-0">
                 <div>
                   <strong>{item.organization.name}</strong>
-                  <span style={{ marginLeft: '10px', fontSize: '0.8em', color: '#666', background: '#eee', padding: '2px 6px', borderRadius: '4px' }}>
-                    {item.role}
-                  </span>
+                  <div className="text-xs">ID: {item.org_id}</div>
                 </div>
-                <Link to={`/orgs/${item.org_id}`} style={{ textDecoration: 'none', color: 'blue', fontWeight: 'bold' }}>
-                  Manage &rarr;
-                </Link>
-              </li>
+                <div className="flex items-center">
+                  <span className={`badge badge-${item.role}`}>{item.role}</span>
+                  <Link to={`/orgs/${item.org_id}`} className="btn btn-secondary ml-4">
+                    Manage &rarr;
+                  </Link>
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </section>
     </div>
