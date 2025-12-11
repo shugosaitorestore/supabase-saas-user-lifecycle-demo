@@ -2,11 +2,13 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthProvider'
 import ProtectedRoute from './components/ProtectedRoute'
 
-// Temporary Placeholders
-const AuthPage = () => <div className="p-8"><h1>Auth Page (To be implemented)</h1></div>
-const DashboardPage = () => <div className="p-8"><h1>Dashboard (To be implemented)</h1></div>
-const OrganizationPage = () => <div className="p-8"><h1>Organization Details (To be implemented)</h1></div>
-const AcceptInvitePage = () => <div className="p-8"><h1>Accept Invite (To be implemented)</h1></div>
+// Real Pages
+import AuthPage from './pages/AuthPage'
+import DashboardPage from './pages/DashboardPage'
+
+// Yet to be implemented
+const OrganizationPage = () => <div className="p-8"><h1>Organization Details (Coming Next)</h1></div>
+const AcceptInvitePage = () => <div className="p-8"><h1>Accept Invite (Coming Next)</h1></div>
 
 function App() {
   return (
