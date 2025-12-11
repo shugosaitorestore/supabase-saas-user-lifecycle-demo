@@ -19,18 +19,18 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
 
   const fetchOrgs = async () => {
+    if (!user) return; // ガードを追加
+
     setLoading(true)
-    // RLSのおかげで、user_id = auth.uid() のフィルタは不要だが、明示しても良い
-    // ネストされたリソース (organizations) を取得する記法
     const { data, error } = await supabase
       .from('memberships')
       .select('org_id, role, organization:organizations(id, name)')
       .eq('status', 'active')
+      .eq('user_id', user.id) // 【重要】自分のレコードだけに絞り込む
     
     if (error) {
       console.error('Error fetching orgs:', error)
     } else {
-      // 型アサーション: SupabaseのJoinクエリ結果は型推論が難しいため
       setOrgs(data as unknown as OrgData[])
     }
     setLoading(false)
